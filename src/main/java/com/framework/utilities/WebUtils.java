@@ -30,6 +30,7 @@ public class WebUtils {
 	 */
 	private void navigate(String url) {
 		driver.navigate().to(url);
+		
 	}
 	
 	/*
