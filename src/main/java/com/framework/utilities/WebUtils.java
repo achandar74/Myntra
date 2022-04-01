@@ -20,6 +20,7 @@ import org.testng.Assert;
 
 public class WebUtils {
 	private WebDriver driver;
+	private Object a;
 
 	WebUtils(WebDriver webDriver) {
 		driver = webDriver;
@@ -214,11 +215,18 @@ public class WebUtils {
 
 	public void dragAndDrop(WebElement Sourcelocator, WebElement Destinationlocator) {
 		Actions action = new Actions(driver);
-		action.dragAndDrop(Sourcelocator, Destinationlocator).build().perform();
+		action.clickAndHold(Sourcelocator).release(Destinationlocator).build().perform();
 	}
 
-	public void switchToWindowByTitle(String title) {
-		driver.switchTo().window(title);
+	public void switchToWindowByTitle(String exceptedTitle) {
+		String currentWindow = driver.getWindowHandle();
+		for (String winHandle : driver.getWindowHandles()) {
+			if (driver.switchTo().window(winHandle).getTitle().equals(exceptedTitle)) {
+				break;
+			} else {
+				driver.switchTo().window(currentWindow);
+			}
+		}
 	}
 
 	public void switchtoParentWindow() {
@@ -234,25 +242,25 @@ public class WebUtils {
 		}
 	}
 
-	public WebElement isEnabled(WebElement element) {
-		element.isEnabled();
-		return element;
+	public boolean isEnabled(WebElement element) {
+		boolean ispresent = element.isEnabled();
+		return ispresent;
 	}
 
-	public void verifyEquals(int a, int b, String str) {
-		Assert.assertEquals(a, b, "" + str + "");
+	public void verifyEquals(int data1, int data2, String str) {
+		Assert.assertEquals(data1, data2, str);
 	}
 
-	public void verifyEquals(double a, double b, String str) {
-		Assert.assertEquals(a, b, "" + str + "");
+	public void verifyEquals(double data1, double data2, String str) {
+		Assert.assertEquals(data1, data2, str);
 	}
 
 	public void verifyTrue(boolean element, String str) {
-		Assert.assertTrue(element, "" + str + "");
+		Assert.assertTrue(element, str);
 	}
 
 	public void verifyFalse(boolean element, String str) {
-		Assert.assertFalse(element, "" + str + "");
+		Assert.assertFalse(element, str);
 	}
 
 	public String getTextFromAlert() {
@@ -377,12 +385,14 @@ public class WebUtils {
 		act.moveToElement(element).click().build().perform();
 	}
 
-	public void getText(WebElement element, String str) {
-		str = element.getText();
+	public String getText(WebElement element) {
+		String str = element.getText();
+		return str;
 	}
 
-	public void getPageTitle(String title) {
-		title = driver.getTitle();
+	public String getPageTitle() {
+		String title = driver.getTitle();
+		return title;
 	}
 
 	public void closeCurrentWindow() {
@@ -405,19 +415,22 @@ public class WebUtils {
 		driver.navigate().refresh();
 	}
 
-	public void isSelected(WebElement element) {
-		element.isSelected();
+	public boolean isSelected(WebElement element) {
+		if (element.isSelected()) {
+			return true;
+		}
+		return false;
 	}
 
 	public void hitEscapeKey() {
 		Actions act = new Actions(driver);
-		act.sendKeys(Keys.ESCAPE).click().build().perform();
+		act.sendKeys(Keys.ESCAPE).build().perform();
 		;
 	}
 
 	public void rightClick() {
 		Actions act = new Actions(driver);
-		act.click().build().perform();
+		act.contextClick().build().perform();
 	}
 
 	public void doubleClick() {
@@ -425,33 +438,58 @@ public class WebUtils {
 		act.doubleClick().build().perform();
 	}
 
-	public void getAttribute(WebElement element, String testdata) {
-		element.getAttribute(testdata);
+	public String getAttribute(WebElement element, String testdata) {
+		String data = element.getAttribute(testdata);
+		return data;
 	}
 
-	public void verifyTextIsPresent(WebElement element) {
-		Assert.assertTrue(element.getText().isEmpty());
+	public boolean verifyTextIsPresent(WebElement element, String data) {
+		if (element.getText() != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public void verifyTextIsAbsent(WebElement element) {
-		Assert.assertFalse(element.getText().isEmpty());
+	public boolean verifyTextIsAbsent(WebElement element, String data) {
+		if (element.getText() == null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public void verifyText(WebElement element, String testdata) {
-		Assert.assertEquals(element.getText(), testdata, "" + testdata + " should be there");
+	public boolean verifyText(WebElement element, String testdata) {
+		String data = element.getText();
+		if (data.length() > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public void verifyEquals(String data1, String data2, String str) {
-		Assert.assertEquals(data1, data2, "" + str + "");
+		if (data1.equals(data2)) {
+			Assert.assertTrue(true, str);
+		} else {
+			Assert.assertTrue(false, str);
+		}
 	}
 
 	public void verifyNotEquals(String data1, String data2, String str) {
-		Assert.assertNotEquals(data1, data2, "" + str + "");
+		if (data1 != data2) {
+			Assert.assertTrue(true, str);
+		} else {
+			Assert.assertTrue(false, str);
+		}
 	}
 
 	public void verifyContains(String data1, String data2, String str) {
-		Assert.assertEquals(data1.contains(data2), "" + str + "");
+		if (data1.contains(data2)) {
+			Assert.assertTrue(true, str);
+		} else {
+			Assert.assertTrue(false, str);
+		}
 	}
-	
-	
+
 }
