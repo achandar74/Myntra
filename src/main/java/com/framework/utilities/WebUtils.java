@@ -1,13 +1,11 @@
 package com.framework.utilities;
 
 import java.time.Duration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -20,7 +18,6 @@ import org.testng.Assert;
 
 public class WebUtils {
 	private WebDriver driver;
-	private Object a;
 
 	WebUtils(WebDriver webDriver) {
 		driver = webDriver;
@@ -52,18 +49,11 @@ public class WebUtils {
 	 * parameters webelement and string clear the webelement enter testdata into
 	 * webelement
 	 */
-	public void clickAndEnter(WebElement element, String testdata) {
+	public void clearAndEnter(WebElement element, String testdata) {
 		element.clear();
 		element.sendKeys(testdata);
 	}
 
-	/*
-	 * parameters webdriver and int driver implicitly wait until i second
-	 * 
-	 */
-	public void implicitwait(WebDriver driver, int i) {
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(i));
-	}
 
 	/*
 	 * parameteres string and int enter chars and size it generate the random
@@ -102,38 +92,7 @@ public class WebUtils {
 	/*
 	 * parameter webelement checks whether it is displayed
 	 */
-	public void verifyIsDisplayed(WebElement element) {
-		Assert.assertTrue(element.isDisplayed(), "" + element + " should display");
-	}
-
-	/*
-	 * parameter webelement checks whether it is enabled
-	 */
-	public void verifyIsEnabled(WebElement element) {
-		Assert.assertTrue(element.isEnabled(), "" + element + " should enabled");
-	}
-
-	/*
-	 * parameter webelement checks whether it is selected
-	 */
-	public void verifyIsSelected(WebElement element) {
-		Assert.assertTrue(element.isSelected(), "" + element + " should selected");
-	}
-
-	/*
-	 * parameter webdriver it accepts the alert
-	 */
-	public void acceptAlertMessage() {
-		driver.switchTo().alert().accept();
-	}
-
-	/*
-	 * parameter webdriver it dismiss the alert
-	 */
-	public void dismissAlertMessage() {
-		driver.switchTo().alert().dismiss();
-	}
-
+	
 	/*
 	 * parameter webdriver close the driver
 	 */
@@ -155,28 +114,29 @@ public class WebUtils {
 		driver.quit();
 	}
 
-	public void getCurrentURL(String str) {
-		str = driver.getCurrentUrl();
+	public String getCurrentURL() {
+		String url = driver.getCurrentUrl();
+		return url;
 	}
 
-	public void enter(String str, String data) {
-		str = data;
-	}
 
-	public boolean isElementPresent(WebElement element) {
-		boolean isPresent = element.isDisplayed();
-		return isPresent;
-	}
-
-	public boolean isElementAbsent(WebElement element) {
-		if (element.isDisplayed()) {
-			return true;
-		} else {
-			return false;
+	public void isElementPresent(WebElement element) {
+		try {
+			Assert.assertTrue(element.isDisplayed());
+		} catch (Exception e) {
+			Assert.assertTrue(element.isDisplayed());
 		}
 	}
 
-	public void switchToWindow() {
+	public void isElementAbsent(WebElement element) {
+		try {
+			Assert.assertFalse(element.isDisplayed());
+		} catch (Exception e) {
+			Assert.assertFalse(element.isDisplayed());
+		}
+	}
+
+	public void switchToChildWindow() {
 		String currentWindowID = driver.getWindowHandle();
 		Set<String> allwindowID = driver.getWindowHandles();
 		for (String eachwindowID : allwindowID) {
@@ -207,15 +167,15 @@ public class WebUtils {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(loadtime));
 	}
 
-	public void fluentwait(WebElement element, int loadtime) {
+	public void fluentwait(WebElement element, int loadtime,int pollingSec) {
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).ignoring(NoSuchElementException.class)
-				.withTimeout(Duration.ofSeconds(loadtime)).pollingEvery(Duration.ofSeconds(5));
+				.withTimeout(Duration.ofSeconds(loadtime)).pollingEvery(Duration.ofSeconds(pollingSec));
 		wait.until(ExpectedConditions.visibilityOf(element));
 	}
 
 	public void dragAndDrop(WebElement Sourcelocator, WebElement Destinationlocator) {
 		Actions action = new Actions(driver);
-		action.clickAndHold(Sourcelocator).release(Destinationlocator).build().perform();
+		action.clickAndHold(Sourcelocator).moveToElement(Destinationlocator).release().build().perform();
 	}
 
 	public void switchToWindowByTitle(String exceptedTitle) {
@@ -247,21 +207,15 @@ public class WebUtils {
 		return ispresent;
 	}
 
-	public void verifyEquals(int data1, int data2, String str) {
-		Assert.assertEquals(data1, data2, str);
+	public void verifyEquals(int actual, int expected, String message) {
+		Assert.assertEquals(actual, expected, message);
 	}
 
-	public void verifyEquals(double data1, double data2, String str) {
-		Assert.assertEquals(data1, data2, str);
+	public void verifyEquals(double actual, double expected, String message) {
+		Assert.assertEquals(actual, expected, message);
 	}
 
-	public void verifyTrue(boolean element, String str) {
-		Assert.assertTrue(element, str);
-	}
-
-	public void verifyFalse(boolean element, String str) {
-		Assert.assertFalse(element, str);
-	}
+	
 
 	public String getTextFromAlert() {
 		String str = driver.switchTo().alert().getText();
@@ -293,7 +247,6 @@ public class WebUtils {
 	public void waitforElementClickableAndPerformClick(WebElement element) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 		wait.until(ExpectedConditions.elementToBeClickable(element)).click();
-		;
 	}
 
 	public void waitforPageTitle(String title) {
@@ -348,9 +301,9 @@ public class WebUtils {
 		return size;
 	}
 
-	public void selectOptionByVisibleText(WebElement element, String str) {
+	public void selectOptionByVisibleText(WebElement element, String data) {
 		Select select = new Select(element);
-		select.selectByVisibleText(str);
+		select.selectByVisibleText(data);
 	}
 
 	public void selectOptionByValue(WebElement element, String str) {
@@ -363,8 +316,8 @@ public class WebUtils {
 		select.selectByIndex(index);
 	}
 
-	public void switchToFrameById(String str) {
-		driver.switchTo().frame(str);
+	public void switchToFrameById(String id) {
+		driver.switchTo().frame(id);
 	}
 
 	public void switchToFrameByIndex(int index) {
@@ -438,8 +391,8 @@ public class WebUtils {
 		act.doubleClick().build().perform();
 	}
 
-	public String getAttribute(WebElement element, String testdata) {
-		String data = element.getAttribute(testdata);
+	public String getAttribute(WebElement element, String attributename) {
+		String data = element.getAttribute(attributename);
 		return data;
 	}
 
@@ -459,8 +412,8 @@ public class WebUtils {
 		}
 	}
 
-	public boolean verifyText(WebElement element, String testdata) {
-		String data = element.getText();
+	public boolean verifyText(WebElement element, String text) {
+		String data = element.getText().concat(text);
 		if (data.length() > 0) {
 			return true;
 		} else {
@@ -468,27 +421,27 @@ public class WebUtils {
 		}
 	}
 
-	public void verifyEquals(String data1, String data2, String str) {
-		if (data1.equals(data2)) {
-			Assert.assertTrue(true, str);
+	public void verifyEquals(String actual, String expected, String message) {
+		if (actual.equals(expected)) {
+			Assert.assertTrue(true, message);
 		} else {
-			Assert.assertTrue(false, str);
+			Assert.assertTrue(false, message);
 		}
 	}
 
-	public void verifyNotEquals(String data1, String data2, String str) {
-		if (data1 != data2) {
-			Assert.assertTrue(true, str);
+	public void verifyNotEquals(String actual, String expected, String message) {
+		if (actual != expected) {
+			Assert.assertTrue(true, message);
 		} else {
-			Assert.assertTrue(false, str);
+			Assert.assertTrue(false, message);
 		}
 	}
 
-	public void verifyContains(String data1, String data2, String str) {
-		if (data1.contains(data2)) {
-			Assert.assertTrue(true, str);
+	public void verifyContains(String actual, String expected, String message) {
+		if (actual.contains(expected)) {
+			Assert.assertTrue(true, message);
 		} else {
-			Assert.assertTrue(false, str);
+			Assert.assertTrue(false, message);
 		}
 	}
 

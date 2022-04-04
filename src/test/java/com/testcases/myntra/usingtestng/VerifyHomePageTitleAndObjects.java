@@ -8,6 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import com.testcase.myntra.usingtestng.MyntraHomepage;
@@ -39,5 +40,11 @@ public class VerifyHomePageTitleAndObjects {
 	public void closeDriver() {
 		driver.close();
 		driver.quit();
+	}
+
+	@Parameters({ "url" })
+	@Test
+	public void url(String urlname) {
+		System.out.println(urlname);
 	}
 }
