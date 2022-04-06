@@ -42,5 +42,6 @@ public class VerifyTitleandObjectsInLuggagesAndTrolleysSectionPage {
 	public void closeDriver() {
 		driver.close();
 		driver.quit();
-	}
+	}	
+	
 }

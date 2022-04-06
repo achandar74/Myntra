@@ -11,8 +11,8 @@ import org.testng.annotations.Test;
 
 public class Dprovider {
 	
-	@Test(dataProvider = "getdata")
-
+	
+	@Test(dataProvider = "data")
 	public void loginpage(String username,String password) {
 		System.setProperty("webdriver.chrome.driver", "C:\\Users\\JANARDHAN\\Downloads\\chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
@@ -25,17 +25,9 @@ public class Dprovider {
 		driver.findElement(By.xpath("//input[@id='submitButton']")).click();
 	}
 	
-	@DataProvider
+	@DataProvider(name="data")
 	private Object[][] getdata() {
-		Object[][] data= new Object[3][2];
-		data[0][0]="chandar";
-		data[0][1]="chandar";
-		
-		data[1][0]="cherry";
-		data[1][1]="cherry";
-
-		data[2][0]="admin";
-		data[2][1]="admin";
+		Object[][] data= {{"chandar","chandar"},{"cherry","cherry"}};
 		return data;
 	}
 }
